@@ -115,5 +115,18 @@ public class ContactService
 			throw new IllegalArgumentException("Contact with this ID does not exist.");
 		}
 	}
+
+	//method to query contact by first name
+	public static Contact queryFirstName(String first)
+	{
+		for (Contact contact : contacts.values())
+		{
+			if (contact.getFirstName().equalsIgnoreCase(first))
+			{
+				return(contact);
+			}
+		}
+		return null;
+	}
 }
 
