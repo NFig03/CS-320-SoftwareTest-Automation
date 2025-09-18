@@ -68,4 +68,15 @@ class ContactServiceTest
 		ContactService.updateAddress("1", "696 Rockwood Dr.");
 		assertTrue(ContactService.contacts.get("1").getAddress() == "696 Rockwood Dr.");
 	}
+
+	@Test  //verifies that contacts can be queried by first name
+	void testFirstNameQuery()
+	{
+		new ContactService();
+		ContactService.addContact("1","Noah","Figueroa","8716987631","723 Apple Field Dr.");
+		ContactService.addContact("2","John","Trevor","8716395631","620 Lollipop Ln.");
+
+		assertEquals(ContactService.queryFirstName("Noah"), ContactService.contacts.get("1"));
+		assertEquals(ContactService.queryFirstName("John"), ContactService.contacts.get("2"));
+	}
 }
