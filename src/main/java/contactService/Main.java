@@ -1,18 +1,18 @@
 package contactService;
 
-import contactService.Contact;
-import contactService.ContactService;
+import javax.swing.SwingUtilities;
+//import contactService.Contact;
+//import contactService.ContactService;
+import contactService.ui.*;
 
 public class Main 
 {
     public static void main(String[] args)
     {
-        // Used to test query function
-        ContactService contactService = new ContactService();
-        contactService.addContact("1", "Noah", "Figueroa", "3333333333", "623 Lollipop Lane");
-        Contact result = ContactService.queryFirstName("Noah");
-        System.out.println(result.getFirstName());
-        System.out.println(result.getLastName());
-        System.out.println(result.getAddress());
+        // Declare, instantiate, and show GUI
+        SwingUtilities.invokeLater(() -> 
+        {
+            new ContactServiceGUI().createAndShowGUI();
+        });
     }
 }
