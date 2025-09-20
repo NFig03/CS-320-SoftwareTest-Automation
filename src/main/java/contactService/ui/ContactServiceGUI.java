@@ -54,6 +54,16 @@ public class ContactServiceGUI
             }
         });
 
+        // Add action listener to "Search First Name" button
+        searchFirstNameButton.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                switchPanel(SearchFirstNameGUI.searchFirstNamePanel);
+            }
+        });
+
         // Button modifiers
         addContactButton.setFont(new Font("Arial", Font.BOLD, 20));
         deleteContactButton.setFont(new Font("Arial", Font.BOLD, 20));
