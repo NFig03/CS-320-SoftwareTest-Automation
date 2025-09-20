@@ -2,23 +2,20 @@ package contactService.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class ContactServiceGUI 
 {
-    public static void main(String[] args)
-    {
-        // Declare, instantiate, and show GUI
-        SwingUtilities.invokeLater(() -> 
-        {
-            new ContactServiceGUI().createAndShowGUI();
-        });
-    }
+    // New JFrame for main window
+    public static JFrame frame = new JFrame("Contact Service");
+
+    // New panel (Main panel)
+    public static JPanel mainPanel = new JPanel(new BorderLayout());
 
     // Set up and display GUI
     public void createAndShowGUI()
     {
-        // New JFrame for main window
-        JFrame frame = new JFrame("Contact Service");
+        // Main frame(window) modifiers
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
@@ -29,7 +26,6 @@ public class ContactServiceGUI
         label.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
 
         // Main panel structure
-        JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(label, BorderLayout.NORTH);
 
         // Button panel components (layered on main panel)
@@ -37,6 +33,18 @@ public class ContactServiceGUI
         JButton deleteContactButton = new JButton("Delete Contact");
         JButton searchFirstNameButton = new JButton("Search By First Name");
         JButton updateContactButton = new JButton("Update Contact");
+
+        // Add action listener to "Add Contact" button
+        addContactButton.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                switchPanel(AddContactGUI.addContactPanel);
+            }
+        });
+
+        // Button modifiers
         addContactButton.setFont(new Font("Arial", Font.BOLD, 20));
         deleteContactButton.setFont(new Font("Arial", Font.BOLD, 20));
         searchFirstNameButton.setFont(new Font("Arial", Font.BOLD, 20));
@@ -58,5 +66,14 @@ public class ContactServiceGUI
 
         // Toggle visibility of frame
         frame.setVisible(true);
+    }
+
+    // Method to switch between panels
+    public static void switchPanel(JPanel panel)
+    {
+        frame.getContentPane().removeAll();
+        frame.getContentPane().add(panel);
+        frame.revalidate();
+        frame.repaint();
     }
 }
