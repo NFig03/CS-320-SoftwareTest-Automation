@@ -64,6 +64,16 @@ public class ContactServiceGUI
             }
         });
 
+         // Add action listener to "Update Contact" button
+        updateContactButton.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                switchPanel(UpdateContactGUI.updateContactPanel);
+            }
+        });
+
         // Button modifiers
         addContactButton.setFont(new Font("Arial", Font.BOLD, 20));
         deleteContactButton.setFont(new Font("Arial", Font.BOLD, 20));

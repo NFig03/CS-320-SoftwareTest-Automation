@@ -1,6 +1,6 @@
 package contactService.ui;
 
-import contactService.ContactService;
+import contactService.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,7 +8,7 @@ import java.awt.event.*;
 public class SearchFirstNameGUI 
 {
     // Search first name panel static and accessible to main file
-    public static JPanel searchFirstNamePanel = new JPanel(new GridLayout(4, 1, 10, 10));
+    public static JPanel searchFirstNamePanel = new JPanel(new GridLayout(3, 2, 10, 10));
 
     static
     {
@@ -16,6 +16,16 @@ public class SearchFirstNameGUI
         searchFirstNamePanel.add(new JLabel("First Name:"));
         JTextField firstNameField = new JTextField();
         searchFirstNamePanel.add(firstNameField);
+
+        // Create Output Area as read only for contact output
+        JTextArea outputArea = new JTextArea();
+        outputArea.setEditable(false);
+        searchFirstNamePanel.add(outputArea);
+
+        // Create secondary Output Area as read only for filler
+        JTextArea outputAreaFiller = new JTextArea();
+        outputAreaFiller.setEditable(false);
+        searchFirstNamePanel.add(outputAreaFiller);
 
         // Create back button
         JButton backButton = new JButton("Back");
@@ -25,11 +35,13 @@ public class SearchFirstNameGUI
         // Add action listener to "Back" button
         backButton.addActionListener(new ActionListener() 
         {
-            // Switch panel back to main panel on click
+            // Switch back to main panel and clear I/O on click
             @Override
             public void actionPerformed(ActionEvent e)
             {
                 ContactServiceGUI.switchPanel(ContactServiceGUI.mainPanel);
+                firstNameField.setText("");
+                outputArea.setText("");
             }
         });
 
@@ -42,15 +54,26 @@ public class SearchFirstNameGUI
         submitButton.addActionListener(new ActionListener() 
         {
             // When "Submit" pressed:
-            // User input saved as a string, passed to queryFirstName method,
-            // panel is switched back to main, and nameField is cleared
+            // Clear output area, retrieve contact
+            // If no contact found, output corresponding statement
+            // If contact is found, output values
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                outputArea.setText("");
                 String firstName = firstNameField.getText().trim();
-                ContactService.queryFirstName(firstName);
-                ContactServiceGUI.switchPanel(ContactServiceGUI.mainPanel);
-                firstNameField.setText("");
+                Contact output = ContactService.queryFirstName(firstName);
+
+                if(output == null)
+                {
+                    outputArea.append("No contact found.");
+                }
+
+                outputArea.append(output.contactId + "\n");
+                outputArea.append(output.firstName + "\n");
+                outputArea.append(output.lastName + "\n");
+                outputArea.append(output.phone + "\n");
+                outputArea.append(output.address + "\n");
             }
         });
     }

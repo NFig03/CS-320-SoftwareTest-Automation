@@ -3,10 +3,10 @@ package contactService;
 public class Contact 
 {
 	public final String contactId;
-	private String firstName;
-	private String lastName;
-	private String phone;
-	private String address;
+	public String firstName;
+	public String lastName;
+	public String phone;
+	public String address;
 	
 	// constructor
 	public Contact(String id, String first, String last, String phone, String address)
