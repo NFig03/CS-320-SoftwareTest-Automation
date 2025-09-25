@@ -1,5 +1,6 @@
 package contactService.ui;
 
+import java.util.*;
 import contactService.*;
 import javax.swing.*;
 import java.awt.*;
@@ -54,26 +55,30 @@ public class SearchFirstNameGUI
         submitButton.addActionListener(new ActionListener() 
         {
             // When "Submit" pressed:
-            // Clear output area, retrieve contact
-            // If no contact found, output corresponding statement
-            // If contact is found, output values
+            // Clear output area, retrieve contact(s)
+            // If no contact(s) found, output corresponding statement
+            // If contact(s) found, output associated values
             @Override
             public void actionPerformed(ActionEvent e)
             {
                 outputArea.setText("");
                 String firstName = firstNameField.getText().trim();
-                Contact output = ContactService.queryFirstName(firstName);
+                Set<String> output = ContactService.queryFirstName(firstName);
 
                 if(output == null)
                 {
                     outputArea.append("No contact found.");
                 }
 
-                outputArea.append(output.contactId + "\n");
-                outputArea.append(output.firstName + "\n");
-                outputArea.append(output.lastName + "\n");
-                outputArea.append(output.phone + "\n");
-                outputArea.append(output.address + "\n");
+                for (String id : output)
+                {
+                    Contact Holder = ContactService.contacts.get(id);
+                    outputArea.append(Holder.contactId + ", ");
+                    outputArea.append(Holder.firstName + " ");
+                    outputArea.append(Holder.lastName + ", ");
+                    outputArea.append(Holder.phone + ", ");
+                    outputArea.append(Holder.address + "\n");
+                }
             }
         });
     }
