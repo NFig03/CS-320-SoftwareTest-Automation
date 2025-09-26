@@ -11,16 +11,21 @@ public class ContactService
 	// Hash Map of first names with corresponding IDs to keep first name lookup efficient
 	public static HashMap<String, Set<String>> firstNameContacts;
 
-	public static HashMap<String, Contact> lastNameContacts;
+	// Hash Map of last names with corresponding IDs to keep last name lookup efficient
+	public static HashMap<String, Set<String>> lastNameContacts;
+
+	// Hash Map of phone numbers with corresponding IDs to keep phone number lookup efficient
 	public static HashMap<String, Contact> phoneContacts;
+
+	// Hash Map of addresses with corresponding IDs to keep address lookup efficient
 	public static HashMap<String, Contact> addressContacts;
 	
 	//constructor
 	public ContactService()
 	{
+		// Initialize all indices
 		contacts = new HashMap<>();
 		firstNameContacts = new HashMap<>();
-
 		lastNameContacts = new HashMap<>();
 		phoneContacts = new HashMap<>();
 		addressContacts = new HashMap<>();
@@ -41,6 +46,9 @@ public class ContactService
 
 			// if there is no set corresponding to the name, create a set and add the id, otherwise add id
 			firstNameContacts.computeIfAbsent(first, k-> new HashSet<>()).add(id);
+
+			// if there is no set corresponding to the last name, create a set and add the id, otherwise add id
+			lastNameContacts.computeIfAbsent(last, k-> new HashSet<>()).add(id);
 		}
 	}
 	
@@ -53,11 +61,16 @@ public class ContactService
 		{
 			Contact contact = contacts.get(id);
 			String firstName = contact.getFirstName();
+			String lastName = contact.getLastName();
 			
 			contacts.remove(id);
 
-			// Derive a set of IDs associated to this name and remove the exact id
+			// Derive a set of IDs associated to this name and remove the exact id from the set
 			Set<String> ids = firstNameContacts.get(firstName);
+			ids.remove(id);
+
+			// Derive a set of IDs associated to this last name and remove that exact id from the set
+			ids = lastNameContacts.get(lastName);
 			ids.remove(id);
 		}
 		else
@@ -111,7 +124,24 @@ public class ContactService
 			//creates temporary contact to be able to update accordingly
 			Contact toBeUpdated;
 			toBeUpdated = contacts.get(id);
+
+			// Derive a set of IDs associated with the provided last name
+			Set<String> oldSet = lastNameContacts.get(toBeUpdated.getLastName());
+			
+			// If set is not null, remove the id, if set is empty then remove the key value pair entirely
+			if (oldSet != null)
+			{
+				oldSet.remove(id);
+			}
+			if (oldSet.isEmpty())
+			{
+				lastNameContacts.remove(toBeUpdated.getFirstName());
+			}
+
 			toBeUpdated.updateLastName(last);
+
+			// Insert last name and ID as key value pair, create a new set if one doesn't exist with last name
+			lastNameContacts.computeIfAbsent(last, k -> new HashSet<>()).add(id);
 		}
 		else
 		{
@@ -169,5 +199,18 @@ public class ContactService
 		}
 	}
 
+	// Method to query a contact by last name using a secondary index
+	// Find the last name in the index of last names and return the associated set of IDs
+	public static Set<String> queryLastName(String last)
+	{
+		if (lastNameContacts.containsKey(last))
+		{
+			return lastNameContacts.get(last);
+		}
+		else
+		{
+			return null;
+		}
+	}
 }
 
