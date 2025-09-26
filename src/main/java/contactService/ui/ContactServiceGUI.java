@@ -31,7 +31,7 @@ public class ContactServiceGUI
         // Button panel components (layered on main panel)
         JButton addContactButton = new JButton("Add Contact");
         JButton deleteContactButton = new JButton("Delete Contact");
-        JButton searchFirstNameButton = new JButton("Search By First Name");
+        JButton searchFirstNameButton = new JButton("Search By");
         JButton updateContactButton = new JButton("Update Contact");
 
         // Add action listener to "Add Contact" button

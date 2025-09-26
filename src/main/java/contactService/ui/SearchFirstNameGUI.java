@@ -9,14 +9,34 @@ import java.awt.event.*;
 public class SearchFirstNameGUI 
 {
     // Search first name panel static and accessible to main file
-    public static JPanel searchFirstNamePanel = new JPanel(new GridLayout(3, 2, 10, 10));
+    public static JPanel searchFirstNamePanel = new JPanel(new GridLayout(7, 2, 10, 10));
 
     static
     {
-        // Name Field
+        // ID Field
+        searchFirstNamePanel.add(new JLabel("ID:"));
+        JTextField idField = new JTextField();
+        searchFirstNamePanel.add(idField);
+        
+        // First Name Field
         searchFirstNamePanel.add(new JLabel("First Name:"));
         JTextField firstNameField = new JTextField();
         searchFirstNamePanel.add(firstNameField);
+
+         // Last Name Field
+        searchFirstNamePanel.add(new JLabel("Last Name:"));
+        JTextField lastNameField = new JTextField();
+        searchFirstNamePanel.add(lastNameField);
+
+         // Phone Number Field
+        searchFirstNamePanel.add(new JLabel("Phone Number:"));
+        JTextField phoneNumberField = new JTextField();
+        searchFirstNamePanel.add(phoneNumberField);
+
+         // Address Field
+        searchFirstNamePanel.add(new JLabel("Address:"));
+        JTextField addressField = new JTextField();
+        searchFirstNamePanel.add(addressField);
 
         // Create Output Area as read only for contact output
         JTextArea outputArea = new JTextArea();
@@ -41,7 +61,12 @@ public class SearchFirstNameGUI
             public void actionPerformed(ActionEvent e)
             {
                 ContactServiceGUI.switchPanel(ContactServiceGUI.mainPanel);
+                outputArea.setText("");
+                idField.setText("");
                 firstNameField.setText("");
+                lastNameField.setText("");
+                phoneNumberField.setText("");
+                addressField.setText("");
                 outputArea.setText("");
             }
         });
@@ -54,30 +79,63 @@ public class SearchFirstNameGUI
         // Add action listener to "Submit" button
         submitButton.addActionListener(new ActionListener() 
         {
-            // When "Submit" pressed:
-            // Clear output area, retrieve contact(s)
-            // If no contact(s) found, output corresponding statement
-            // If contact(s) found, output associated values
+            // Triggered when "Submit" is pressed:
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                // Clear output area
                 outputArea.setText("");
-                String firstName = firstNameField.getText().trim();
-                Set<String> output = ContactService.queryFirstName(firstName);
 
-                if(output == null)
+                // Placeholders for query results
+                Set<String> output = null;
+                Contact outputContact = null;
+                
+                // Get trimmed user input from each field
+                String id = idField.getText().trim();
+                String firstName = firstNameField.getText().trim();
+                String lastName = lastNameField.getText().trim();
+
+                // Perform the appropriate query based on which field is filled
+                if (id.isEmpty() == false)
                 {
-                    outputArea.append("No contact found.");
+                    outputContact = ContactService.contacts.get(id);
+                }
+                else if (firstName.isEmpty() == false)
+                {
+                    output = ContactService.queryFirstName(firstName);
+                }
+                else if (lastName.isEmpty() == false)
+                {
+                    output = ContactService.queryLastName(lastName);
                 }
 
-                for (String id : output)
+                // If a contact was found by ID, display it
+                if (outputContact != null)
                 {
-                    Contact Holder = ContactService.contacts.get(id);
+                    outputArea.append(outputContact.contactId + ", ");
+                    outputArea.append(outputContact.firstName + " ");
+                    outputArea.append(outputContact.lastName + ", ");
+                    outputArea.append(outputContact.phone + ", ");
+                    outputArea.append(outputContact.address + "\n");
+                }
+                // If any other query returned output and is not null, print associated information
+                else if (output != null && !output.isEmpty())
+                {
+                    // iterate over returned set if there are multiple IDs associated with the queried attribute
+                    for (String idNum : output)
+                {
+                    Contact Holder = ContactService.contacts.get(idNum);
                     outputArea.append(Holder.contactId + ", ");
                     outputArea.append(Holder.firstName + " ");
                     outputArea.append(Holder.lastName + ", ");
                     outputArea.append(Holder.phone + ", ");
                     outputArea.append(Holder.address + "\n");
+                }
+                }
+                else
+                {
+                    // No matching contact found
+                    outputArea.append("No contact found.");
                 }
             }
         });
