@@ -94,6 +94,8 @@ public class SearchFirstNameGUI
                 String id = idField.getText().trim();
                 String firstName = firstNameField.getText().trim();
                 String lastName = lastNameField.getText().trim();
+                String phoneNumber = phoneNumberField.getText().trim();
+                String address = addressField.getText().trim();
 
                 // Perform the appropriate query based on which field is filled
                 if (id.isEmpty() == false)
@@ -107,6 +109,14 @@ public class SearchFirstNameGUI
                 else if (lastName.isEmpty() == false)
                 {
                     output = ContactService.queryLastName(lastName);
+                }
+                else if (phoneNumber.isEmpty() == false)
+                {
+                    output = ContactService.queryPhoneNumber(phoneNumber);
+                }
+                else if (address.isEmpty() == false)
+                {
+                    output = ContactService.queryAddress(address);
                 }
 
                 // If a contact was found by ID, display it

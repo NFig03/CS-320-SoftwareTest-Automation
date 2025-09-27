@@ -15,10 +15,10 @@ public class ContactService
 	public static HashMap<String, Set<String>> lastNameContacts;
 
 	// Hash Map of phone numbers with corresponding IDs to keep phone number lookup efficient
-	public static HashMap<String, Contact> phoneContacts;
+	public static HashMap<String, Set<String>> phoneContacts;
 
 	// Hash Map of addresses with corresponding IDs to keep address lookup efficient
-	public static HashMap<String, Contact> addressContacts;
+	public static HashMap<String, Set<String>> addressContacts;
 	
 	//constructor
 	public ContactService()
@@ -49,6 +49,12 @@ public class ContactService
 
 			// if there is no set corresponding to the last name, create a set and add the id, otherwise add id
 			lastNameContacts.computeIfAbsent(last, k-> new HashSet<>()).add(id);
+
+			// if there is no set corresponding to the phone number, create a set and add the id, otherwise add id
+			phoneContacts.computeIfAbsent(phone, k-> new HashSet<>()).add(id);
+
+			// if there is no set corresponding to the address, create a set and add the id, otherwise add id
+			addressContacts.computeIfAbsent(addy, k-> new HashSet<>()).add(id);
 		}
 	}
 	
@@ -62,6 +68,8 @@ public class ContactService
 			Contact contact = contacts.get(id);
 			String firstName = contact.getFirstName();
 			String lastName = contact.getLastName();
+			String phoneNumber = contact.getNumber();
+			String address = contact.getAddress();
 			
 			contacts.remove(id);
 
@@ -71,6 +79,14 @@ public class ContactService
 
 			// Derive a set of IDs associated to this last name and remove that exact id from the set
 			ids = lastNameContacts.get(lastName);
+			ids.remove(id);
+
+			// Retrieve the ID associated to the phone number and remove it from the set
+			ids = phoneContacts.get(phoneNumber);
+			ids.remove(id);
+
+			// Retrieve a set of IDs associated with the address and remove the exact id from the set
+			ids = addressContacts.get(address);
 			ids.remove(id);
 		}
 		else
@@ -159,7 +175,24 @@ public class ContactService
 			//creates temporary contact to be able to update accordingly
 			Contact toBeUpdated;
 			toBeUpdated = contacts.get(id);
+
+			// Derive a set of IDs associated with the provided phone number
+			Set<String> oldSet = phoneContacts.get(toBeUpdated.getNumber());
+			
+			// If set is not null, remove the id, if set is empty then remove the key value pair entirely
+			if (oldSet != null)
+			{
+				oldSet.remove(id);
+			}
+			if (oldSet.isEmpty())
+			{
+				phoneContacts.remove(toBeUpdated.getNumber());
+			}
+
 			toBeUpdated.updateNumber(phone);
+
+			// Insert phone number and ID as key value pair, create a new set if one doesn't exist with that phone number
+			phoneContacts.computeIfAbsent(phone, k -> new HashSet<>()).add(id);
 		}
 		else
 		{
@@ -177,7 +210,24 @@ public class ContactService
 			//creates temporary contact to be able to update accordingly
 			Contact toBeUpdated;
 			toBeUpdated = contacts.get(id);
+
+			// Derive a set of IDs associated with the provided address
+			Set<String> oldSet = addressContacts.get(toBeUpdated.getAddress());
+			
+			// If set is not null, remove the id, if set is empty then remove the key value pair entirely
+			if (oldSet != null)
+			{
+				oldSet.remove(id);
+			}
+			if (oldSet.isEmpty())
+			{
+				addressContacts.remove(toBeUpdated.getAddress());
+			}
+
 			toBeUpdated.updateAddress(addy);
+
+			// Insert address and ID as key value pair, create a new set if one doesn't exist with that address
+			addressContacts.computeIfAbsent(addy, k -> new HashSet<>()).add(id);
 		}
 		else
 		{
@@ -206,6 +256,34 @@ public class ContactService
 		if (lastNameContacts.containsKey(last))
 		{
 			return lastNameContacts.get(last);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	// Method to query a contact by phone number using a secondary index
+	// Find the phone number in the index of phone numbers and return the associated set of IDs
+	public static Set<String> queryPhoneNumber(String number)
+	{
+		if (phoneContacts.containsKey(number))
+		{
+			return phoneContacts.get(number);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	// Method to query a contact by address using a secondary index
+	// Find the address in the index of addresses and return the associated set of IDs
+	public static Set<String> queryAddress(String address)
+	{
+		if (addressContacts.containsKey(address))
+		{
+			return addressContacts.get(address);
 		}
 		else
 		{
